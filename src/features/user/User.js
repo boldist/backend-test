@@ -1,57 +1,54 @@
-import React, { useEffect, useState } from "react";
 import "./user.css";
+import { useSelector, useDispatch } from 'react-redux'
+import { requestUser } from "./userSlice"
+import { useEffect } from "react";
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 
-import axios from "axios";
+export function User() {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
+  const loading = useSelector((state) => state.user.status);
+  
+  useEffect(
+    () => {
+      dispatch(requestUser());
+    }, []
+  );
 
-function User() {
-  const [user, setUser] = useState("");
-
-  useEffect(() => {
-    const options = {
-      method: "GET",
-      url: `https://randomuser.me/api/`,
-    };
-    axios
-      .request(options)
-      .then((response) => {
-        setUser(response.data.results[0]);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
-  const renderUser = () => {
+  if (loading === "loading") {
     return (
-      <>
+        <Box padding={4} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+            <CircularProgress />
+        </Box>
+    );
+}
+
+  return (
+    <>
         <div className="user__left">
-          <img src={user.picture.large} alt="" />
+          <img src={user?.picture?.large} alt="" />
         </div>
         <div className="user__right">
-          {
             <ul>
               <li>
                 <h1>
-                  {user.name.first} {user.name.last}
+                  {user?.name?.first} {user?.name?.last}
                 </h1>
               </li>
               <li>
-                <h3>Email: {user.email}</h3>
+                <h3>Email: {user?.email}</h3>
               </li>
               <li>
-                <h3>Phone: {user.phone}</h3>
+                <h3>Phone: {user?.phone}</h3>
               </li>
               <li>
-                <h3>City: {user.location.city}</h3>
+                <h3>City: {user?.location?.city}</h3>
               </li>
             </ul>
-          }
         </div>
       </>
-    );
-  };
-
-  return <div className="user">{renderUser()}</div>;
+  );
 }
 
 export default User;
