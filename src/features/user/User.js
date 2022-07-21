@@ -2,25 +2,32 @@ import React, { useEffect, useState } from "react";
 import "./user.css";
 
 import axios from "axios";
-
-function User() {
-  const [user, setUser] = useState("");
-
+import { getUser, isLoading } from "./userAPI";
+import { useDispatch, useSelector } from "react-redux";
+const User = () =>{
+  const dispatch = useDispatch()
   useEffect(() => {
     const options = {
       method: "GET",
-      url: `https://randomuser.me/api/`,
+      url: `http://localhost:5000/getuser`,
     };
     axios
       .request(options)
       .then((response) => {
-        setUser(response.data.results[0]);
+        dispatch(isLoading(true))
+        dispatch(getUser(response.data.UserData.results[0]))
+        dispatch(isLoading(false))
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
-
+  
+  const user = useSelector(state => state.user.user)
+  const Loading = useSelector(state => state.user.status)
+  if (Loading) {
+    return <h1>Loading...</h1>
+  }
   const renderUser = () => {
     return (
       <>
@@ -28,7 +35,6 @@ function User() {
           <img src={user.picture.large} alt="" />
         </div>
         <div className="user__right">
-          {
             <ul>
               <li>
                 <h1>
@@ -45,7 +51,6 @@ function User() {
                 <h3>City: {user.location.city}</h3>
               </li>
             </ul>
-          }
         </div>
       </>
     );
