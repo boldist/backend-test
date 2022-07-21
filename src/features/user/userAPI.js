@@ -1,3 +1,17 @@
-import axios from "axios";
+export const getUser = (data) => {
+    return dispatch => {
+      dispatch({
+        type: 'user',
+        data
+      })
+    }
+}
 
-export async function getUser() {}
+export const isLoading = (data) => {
+    return dispatch => {
+      dispatch({
+        type: 'loading',
+        data
+      })
+    }
+}
