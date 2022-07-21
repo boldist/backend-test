@@ -1,33 +1,23 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getUser } from "./userAPI";
-
 const initialState = {
   user: "",
-  staus: "idle",
+  status: "idle",
 };
 
-export const userSlice = createSlice({
-  name: "user",
-  initialState,
+const userSliceReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case 'user':
+      return {
+        ...state,
+        user: action.data
+      }
+    case 'loading':
+      return { ...state, status: action.data }
+    default:
+      return state
+  }
+}
 
-  reducers: {
-    addUser: (state, action) => {
-      state.user = [...state.user, action.user];
-    },
-  },
+export default userSliceReducer
 
-  extraReducers: (builder) => {
-    builder
-      .addCase(requestUser.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(requestUser.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.user = action.payload;
-      });
-  },
-});
 
-export const { addUser } = userSlice.actions;
 
-export default userSlice.reducer;
